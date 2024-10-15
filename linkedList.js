@@ -56,7 +56,7 @@ export class LinkedList {
       if (currentNode.nextNode) {
         currentNode = currentNode.nextNode;
       } else {
-        console.error("Index out of bounds");
+        return "Index out of bounds";
       }
     }
     return currentNode;
@@ -64,34 +64,32 @@ export class LinkedList {
 
   pop() {
     const lastIndex = this.size() - 2;
-    const lastNode = at(lastIndex);
+    const lastNode = this.at(lastIndex);
     this.tail = lastNode;
     lastNode.nextNode = null;
   }
 
   contains(value) {
     let currentNode = this.head;
-    do {
+    while(currentNode) {
       if (currentNode.value === value) {
         return true;
-      } else if (currentNode.nextNode) {
-        currentNode = currentNode.nextNode;
       }
-    } while (currentNode.nextNode);
+      currentNode = currentNode.nextNode;
+    }
     return false;
   }
 
   find(value) {
     let currentNode = this.head;
     let index = 0;
-    do {
+    while(currentNode) {
       if (currentNode.value === value) {
         return index;
-      } else if (currentNode.nextNode) {
-        currentNode = currentNode.nextNode;
-        index++;
       }
-    } while (currentNode.nextNode);
+      currentNode = currentNode.nextNode;
+      index++;
+    }
     return null;
   }
 
@@ -101,18 +99,40 @@ export class LinkedList {
     } else {
       let currentNode = this.head;
       let output = ``;
-      do {
+      while(currentNode) {
         output += `( ${currentNode.value} ) -> `;
-        if (currentNode.nextNode) {
-          currentNode = currentNode.nextNode;
-        }
-      } while (currentNode.nextNode);
+        currentNode = currentNode.nextNode;
+      }
       output += `null`;
-      console.log(output);
+      return output;
     }
   }
 
-  insertAt(value, index) {}
+  insertAt(value, index) {
+    if (index === 0) {
+      this.prepend(value);
+    } else if (index >= this.size()) {
+      this.append(value);
+    } else {
+      const newNode = new Node(value);
+      const previousNode = this.at(index - 1);
+      newNode.nextNode = previousNode.nextNode;
+      previousNode.nextNode = newNode;
+    }
+  }
 
-  removeAt(value, index) {}
+  removeAt(index) {
+    if (index === 0) {
+      const deletedNode = this.head;
+      this.head = deletedNode.nextNode;
+      deletedNode.nextNode = null;
+    } else if (index === (this.size() - 1)) {
+      this.pop();
+    } else {
+      const previousNode = this.at(index - 1);
+      const deletedNode = previousNode.nextNode;
+      previousNode.nextNode = deletedNode.nextNode;
+      deletedNode.nextNode = null;
+    }
+  }
 }
